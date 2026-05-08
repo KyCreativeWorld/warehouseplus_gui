@@ -1,17 +1,33 @@
-#include <iostream>
+#include "raylib.h"
 
-#include "include/imgui.h"
+#define MAX_MONITORS 10
 
-#include "include/raylib.h"
+// Monitor info
+typedef struct MonitorInfo {
+    Vector2 position;
+    const char *name;
+    int width;
+    int height;
+    int physicalWidth;
+    int physicalHeight;
+    int refreshRate;
+} MonitorInfo;
 
+//------------------------------------------------------------------------------------
+// Program main entry point
+//------------------------------------------------------------------------------------
 int main(void)
 {
     // Initialization
     //--------------------------------------------------------------------------------------
-    const int screenWidth = 800;
-    const int screenHeight = 450;
+    const int screenWidth = 1710;
+    const int screenHeight = 1107;
 
-    InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
+    InitWindow(screenWidth, screenHeight, "📦 WarehousePLUS 📦");
+
+    MonitorInfo monitors[MAX_MONITORS] = { 0 };
+    int currentMonitorIndex = GetCurrentMonitor();
+    int monitorCount = 0;
 
     SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
     //--------------------------------------------------------------------------------------
@@ -19,21 +35,22 @@ int main(void)
     // Main game loop
     while (!WindowShouldClose())    // Detect window close button or ESC key
     {
-        // Update
-        //----------------------------------------------------------------------------------
-        // TODO: Update your variables here
-        //----------------------------------------------------------------------------------
+        if (IsKeyPressed(KEY_BACKSLASH)) {
+            ToggleFullscreen();
+        }
 
-        // Draw
-        //----------------------------------------------------------------------------------
         BeginDrawing();
 
-            ClearBackground(RAYWHITE);
+        ClearBackground(LIGHTGRAY);
 
-            DrawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
+        DrawRectangle(20, 20, 1670, 927, GRAY);
+
+        DrawText("WarehousePLUS", 40, 40, 32, BLACK);
+
+        
+
 
         EndDrawing();
-        //----------------------------------------------------------------------------------
     }
 
     // De-Initialization
