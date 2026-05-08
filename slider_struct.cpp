@@ -1,14 +1,31 @@
 #include "raylib.h"
+#include <cmath>
+#include <string>
+#include <format>
+
+#include "color_scheme.h"
 
 struct Slider {
+    std::string sliderText;
     Rectangle bounds;
-    float value;
-    bool isDragging;
+    float sliderPos;
+    int minVal;
+    int maxVal;
+    Color textColor = TEXT_COLOR;
+    Color sliderColor = ACCENT_COLOR;
+    Color highlightColor = SECONDARY_BG;
+    int valsInterval = maxVal - minVal;
+    bool isDragging = false;
+    Rectangle sliderBounds = {bounds.x + (bounds.width / 2), (bounds.y + (bounds.height / 2)) - bounds.height, (bounds.height + 2) * 2, (bounds.height + 2) * 2};
 
+    int GetValue() {
+        return minVal + static_cast<int>(std::round(sliderPos * valsInterval));
+    }
+    
     void Update() {
         Vector2 mousePos = GetMousePosition();
 
-        if (CheckCollisionPointRec(mousePos, bounds) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+        if ((CheckCollisionPointRec(mousePos, bounds) || CheckCollisionPointRec(mousePos, sliderBounds)) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
             isDragging = true;
         }
         if (IsMouseButtonReleased(MOUSE_LEFT_BUTTON)) {
@@ -16,16 +33,26 @@ struct Slider {
         }
 
         if (isDragging) {
-            value = (mousePos.x - bounds.x) / bounds.width;
-            if (value > 1.0f) value = 1.0f;
-            if (value < 0.0f) value = 0.0f;
+            sliderPos = (mousePos.x - bounds.x) / bounds.width;
+            if (sliderPos > 1.0f) sliderPos = 1.0f;
+            if (sliderPos < 0.0f) sliderPos = 0.0f;
+
+            if (valsInterval > 0) {
+                sliderPos = std::round(sliderPos * valsInterval) / valsInterval;
+            }
         }
 
     }
 
     void Draw() {
-        DrawRectangleRec(bounds, BLACK);
+        DrawRectangle(bounds.x + 5, bounds.y + 5, bounds.width - 10, bounds.height - 10, BLACK);
 
-        
+        float sliderX = bounds.x + (sliderPos * bounds.width);
+        sliderBounds.x = sliderX - bounds.height;
+        DrawCircle(sliderX, bounds.y + (bounds.height / 2), bounds.height, sliderColor);
+
+        if (isDragging) DrawCircleLines(sliderX, bounds.y + (bounds.height / 2), bounds.height + 2, highlightColor);
+
+        DrawText(TextFormat("%s: %i", sliderText.c_str(), GetValue()), bounds.x - 40, bounds.y - 40, 20, textColor);
     }
 };

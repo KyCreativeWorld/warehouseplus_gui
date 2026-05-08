@@ -1,4 +1,6 @@
 #include "raylib.h"
+#include "slider_struct.cpp"
+#include "color_scheme.h"
 
 #define MAX_MONITORS 10
 
@@ -32,6 +34,9 @@ int main(void)
     SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
     //--------------------------------------------------------------------------------------
 
+    Slider simIBminSlider = {"Inbound Shipment Minimum", { 1000, 200, 210, 20 }, 0.5f, 0, 300};
+    Slider simIBmaxSlider = {"Inbound Shipment Maximum", { 1000, 300, 210, 20 }, 0.5f, 0, 300};
+    
     // Main game loop
     while (!WindowShouldClose())    // Detect window close button or ESC key
     {
@@ -39,16 +44,19 @@ int main(void)
             ToggleFullscreen();
         }
 
+        simIBminSlider.Update();
+        simIBmaxSlider.Update();
+
         BeginDrawing();
 
-        ClearBackground(LIGHTGRAY);
+        ClearBackground(SECONDARY_BG);
 
-        DrawRectangle(20, 20, 1670, 927, GRAY);
+        DrawRectangle(20, 20, 1670, 927, PRIMARY_BG);
 
-        DrawText("WarehousePLUS", 40, 40, 32, BLACK);
+        DrawText("WarehousePLUS", 40, 40, 32, TEXT_COLOR);
 
-        
-
+        simIBminSlider.Draw();
+        simIBmaxSlider.Draw();
 
         EndDrawing();
     }
