@@ -11,9 +11,6 @@ struct Slider {
     float sliderPos;
     int minVal;
     int maxVal;
-    Color textColor = TEXT_COLOR;
-    Color sliderColor = ACCENT_COLOR;
-    Color highlightColor = SECONDARY_BG;
     int valsInterval = maxVal - minVal;
     bool isDragging = false;
     Rectangle sliderBounds = {bounds.x + (bounds.width / 2), (bounds.y + (bounds.height / 2)) - bounds.height, (bounds.height + 2) * 2, (bounds.height + 2) * 2};
@@ -49,10 +46,10 @@ struct Slider {
 
         float sliderX = bounds.x + (sliderPos * bounds.width);
         sliderBounds.x = sliderX - bounds.height;
-        DrawCircle(sliderX, bounds.y + (bounds.height / 2), bounds.height, sliderColor);
+        DrawCircle(sliderX, bounds.y + (bounds.height / 2), bounds.height, ACCENT_COLOR);
 
-        if (isDragging) DrawCircleLines(sliderX, bounds.y + (bounds.height / 2), bounds.height + 2, highlightColor);
+        if (isDragging) DrawCircleLines(sliderX, bounds.y + (bounds.height / 2), bounds.height + 2, SECONDARY_BG);
 
-        DrawText(TextFormat("%s: %i", sliderText.c_str(), GetValue()), bounds.x - 40, bounds.y - 40, 20, textColor);
+        DrawText(TextFormat(sliderText.c_str(), GetValue()), bounds.x - 40, bounds.y - 40, 20, TEXT_COLOR);
     }
 };
