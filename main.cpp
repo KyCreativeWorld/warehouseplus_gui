@@ -1,12 +1,16 @@
 #include "raylib.h"
 #include "slider_struct.cpp"
-#include "color_scheme.h"
+#include "button_class.h"
+#include "config.h"
+#include "nlohmann/json.hpp"
 
 #include <iostream>
 #include <fstream>
 #include <stdio.h>
 
 #define MAX_MONITORS 10
+
+using json = nlohmann::json;
 
 // Monitor info
 typedef struct MonitorInfo {
@@ -36,14 +40,19 @@ int main(void)
 
     SetTargetFPS(60);
 
-    Slider simIBminSlider = {"Inbound Shipment Minimum: %i", { 1000, 200, 210, 20 }, 0.5f, 0, 300};
-    Slider simIBmaxSlider = {"Inbound Shipment Maximum: %i", { 1000, 300, 210, 20 }, 0.5f, 0, 300};
+    Slider simIBminSlider = {"Inbound Shipment Minimum: %i", { 1000, 450, 210, 20 }, 0.5f, 0, 300};
+    Slider simIBmaxSlider = {"Inbound Shipment Maximum: %i", { 1000, 550, 210, 20 }, 0.5f, 0, 300};
 
-    Slider simOBminSlider = {"Outbound Shipment Minimum: %i", { 1000, 450, 210, 20 }, 0.5f, 0, 300};
-    Slider simOBmaxSlider = {"Outbound Shipment Maximum: %i", { 1000, 550, 210, 20 }, 0.5f, 0, 300};
+    Slider simOBminSlider = {"Outbound Shipment Minimum: %i", { 1360, 450, 210, 20 }, 0.5f, 0, 300};
+    Slider simOBmaxSlider = {"Outbound Shipment Maximum: %i", { 1360, 550, 210, 20 }, 0.5f, 0, 300};
 
-    Slider simTimerminSlider = {"Min: %i", { 1000, 700, 210, 20 }, 0.5f, 0, 300};
-    Slider simTimermaxSlider = {"Max: %i", { 1000, 800, 210, 20 }, 0.5f, 0, 300};
+    Slider simTimerminSlider = {"Minimum Time Inteval: %i", { 1360, 200, 210, 20 }, 0.5f, 0, 300};
+    Slider simTimermaxSlider = {"Maximum Time Inteval: %i", { 1360, 300, 210, 20 }, 0.5f, 0, 300};
+
+    SimulatorButton simButton("Off", "On", {1000, 200, 210, 100});
+    
+    // std::cout << "Created file" << std::endl;
+    // std::fstream statsFile("../warehouseplus/info.json");
     
     // Update
     //--------------------------------------------------------------------------------------
@@ -54,14 +63,21 @@ int main(void)
         }
 
         // Update the sliders
+        simTimerminSlider.Update();
+        simTimermaxSlider.Update();
+        
         simIBminSlider.Update();
         simIBmaxSlider.Update();
 
         simOBminSlider.Update();
         simOBmaxSlider.Update();
 
-        simTimerminSlider.Update();
-        simTimermaxSlider.Update();
+        simButton.Update(simTimerminSlider.GetValue(),
+                         simTimermaxSlider.GetValue(),
+                         simIBminSlider.GetValue(),
+                         simIBmaxSlider.GetValue(),
+                         simOBminSlider.GetValue(),
+                         simOBmaxSlider.GetValue());
 
         
         // Drawing
@@ -85,24 +101,34 @@ int main(void)
         simTimerminSlider.Draw();
         simTimermaxSlider.Draw();
 
+
+        simButton.Draw();
+
         EndDrawing(); // End the drawing
 
-        // Update stats.csv
-        int delStatus = remove("stats.csv");
+        // Update info.json
+        // std::cout << "Removed file" << std::endl;
+        // int delStatus = remove("../warehouseplus/info.json");
 
-        if (delStatus == 0) {
-            std::fstream statsFile("stats.csv");
+        // if (delStatus == 0) {
+            // std::cout << "Wrote to file" << std::endl;
+            // std::fstream statsFile("../warehouseplus/info.json");
 
-            statsFile << simTimerminSlider.GetValue() << std::endl << simTimermaxSlider.GetValue()
-                      << std::endl << simIBminSlider.GetValue() << std::endl << simIBmaxSlider.GetValue()
-                      << std::endl << simOBminSlider.GetValue() << std::endl << simOBmaxSlider.GetValue();
+            // statsFile << "{\"sim_timer_min\": " << simTimerminSlider.GetValue()
+            //           << ", \"sim_timer_max\": " << simTimermaxSlider.GetValue()
+            //           << ", \"sim_inbound_min\": " << simIBminSlider.GetValue()
+            //           << ", \"sim_inbound_max\": " << simIBmaxSlider.GetValue()
+            //           << ", \"sim_outbound_min\": " << simOBminSlider.GetValue()
+            //           << ", \"sim_outbound_max\": " << simOBmaxSlider.GetValue() << "}";
 
-            statsFile.close();
-        }
+            // statsFile.close();
+        // }
     }
 
     // Closing
     //--------------------------------------------------------------------------------------
+    if (IsPathFile("../warehouseplus/simulator_info.json")) remove("../warehouseplus/simulator_info.json");
+    
     CloseWindow();
 
     return 0;

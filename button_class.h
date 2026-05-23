@@ -1,31 +1,47 @@
 #pragma once
 
 #include "raylib.h"
+#include "config.h"
 #include <string>
 #include <fstream>
 // #include <nlohmann/json.hpp>
 // using json = nlohmann::json;
 
 class Button {
-    private:
-        std::string type;
+    protected:
+        std::string offText;
+        std::string onText;
         Rectangle bounds;
         bool active;
-    public:
-        Button(std::string t, Rectangle b) { this->type = t; this->bounds = b; }
 
-        void update();
-        void draw();
+        short clickFade = 0;    
+        virtual void onClick();
+
+    public:
+        Button(std::string offText, std::string onText, Rectangle buttonShape) {
+            this->offText = offText;
+            this->onText = onText;
+            this->bounds = buttonShape;
+        }
+
+        void Update();
+        void Draw();
 
         bool isActive() { return this->active; }
         void setActive(bool a) { this->active = a; }
-
-    protected:
-        virtual void onClick();
 };
 
 class SimulatorButton : public Button {  
     public:
+        SimulatorButton(std::string offText, std::string onText, Rectangle buttonShape) : Button(offText, onText, buttonShape) {
+            this->IBmin = 0;
+            this->IBmax = 0;
+            this->OBmin = 0;
+            this->OBmax = 0;
+            this->timerMin = 0;
+            this->timerMax = 0;
+        }
+
         void setSliderValues(int inboundMin, int inboundMax, int outboundMin, int outboundMax, int timerMin, int timerMax) {
             this->IBmin = inboundMin;
             this->IBmax = inboundMax;
@@ -36,6 +52,8 @@ class SimulatorButton : public Button {
             this->timerMin = timerMin;
             this->timerMax = timerMax;
         }
+
+        void Update(int sTimerMin, int sTimerMax, int sIBmin, int sIBmax, int sOBmin, int sOBmax);
     protected:
         void onClick() override;
     private:

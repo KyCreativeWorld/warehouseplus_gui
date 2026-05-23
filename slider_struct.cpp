@@ -3,7 +3,7 @@
 #include <string>
 #include <format>
 
-#include "color_scheme.h"
+#include "config.h"
 
 struct Slider {
     std::string sliderText;
