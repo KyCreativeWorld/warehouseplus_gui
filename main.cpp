@@ -49,7 +49,8 @@ int main(void)
     Slider simTimerminSlider = {"Minimum Time Inteval: %i", { 1360, 200, 210, 20 }, 0.5f, 0, 300};
     Slider simTimermaxSlider = {"Maximum Time Inteval: %i", { 1360, 300, 210, 20 }, 0.5f, 0, 300};
 
-    SimulatorButton simButton("Off", "On", {1000, 200, 210, 100});
+    SimulatorButton simButton("Off", "On", {1000, 160, 210, 80});
+    SimUpdateButton simUpdater("Update", "Update", {1000, 260, 210, 80}, simButton);
     
     // std::cout << "Created file" << std::endl;
     // std::fstream statsFile("../warehouseplus/info.json");
@@ -79,6 +80,8 @@ int main(void)
                          simOBminSlider.GetValue(),
                          simOBmaxSlider.GetValue());
 
+        simUpdater.Update();
+
         
         // Drawing
         BeginDrawing();
@@ -103,6 +106,7 @@ int main(void)
 
 
         simButton.Draw();
+        simUpdater.Draw();
 
         EndDrawing(); // End the drawing
 

@@ -35,16 +35,16 @@ void Button::onClick() {
 void SimulatorButton::Update(int sTimerMin, int sTimerMax, int sIBmin, int sIBmax, int sOBmin, int sOBmax) {
     Vector2 mousePos = GetMousePosition();
 
+    this->timerMin = sTimerMin;
+    this->timerMax = sTimerMax;
+
+    this->IBmin = sIBmin;
+    this->IBmax = sIBmax;
+
+    this->OBmin = sOBmin;
+    this->OBmax = sOBmax;
+
     if (CheckCollisionPointRec(mousePos, bounds) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-        this->timerMin = sTimerMin;
-        this->timerMax = sTimerMax;
-
-        this->IBmin = sIBmin;
-        this->IBmax = sIBmax;
-
-        this->OBmin = sOBmin;
-        this->OBmax = sOBmax;
-
         this->onClick();
         this->clickFade = 5;
     }
@@ -53,10 +53,35 @@ void SimulatorButton::Update(int sTimerMin, int sTimerMax, int sIBmin, int sIBma
 void SimulatorButton::onClick() {
     this->setActive(!this->isActive());
 
-    // std::cout << "Wrote to file" << std::endl;
-    std::ofstream simInfoFile("../warehouseplus/simulator_info.json");
+    UpdateJSON();
+}
 
-    simInfoFile << "{\"sim_active\": " << this->isActive()
+// void SimulatorButton::UpdateJSON() {
+//     std::ofstream simInfoFile("../warehouseplus/backend/simulator_info.json");
+
+//     simInfoFile << "{\"sim_active\": " << this->isActive()
+//                 << ", \"sim_timer_min\": " << timerMin
+//                 << ", \"sim_timer_max\": " << timerMax
+//                 << ", \"sim_inbound_min\": " << IBmin
+//                 << ", \"sim_inbound_max\": " << IBmax
+//                 << ", \"sim_outbound_min\": " << OBmin
+//                 << ", \"sim_outbound_max\": " << OBmax << "}";
+
+//     simInfoFile.close();
+// }
+
+void SimulatorButton::UpdateJSON() {
+    std::cout << "[DEBUG] UpdateJSON() called inside SimulatorButton!" << std::endl;
+    std::cout << "[DEBUG] Current IBmin state: " << IBmin << std::endl;
+
+    std::ofstream simInfoFile("../warehouseplus/backend/simulator_info.json");
+
+    if (!simInfoFile.is_open()) {
+        std::cerr << "[ERROR] Could not write to file! Path mismatch or missing 'backend' folder." << std::endl;
+        return;
+    }
+
+    simInfoFile << "{\"sim_active\": " << (this->isActive() ? "true" : "false")
                 << ", \"sim_timer_min\": " << timerMin
                 << ", \"sim_timer_max\": " << timerMax
                 << ", \"sim_inbound_min\": " << IBmin
@@ -65,4 +90,5 @@ void SimulatorButton::onClick() {
                 << ", \"sim_outbound_max\": " << OBmax << "}";
 
     simInfoFile.close();
+    std::cout << "[SUCCESS] simulator_info.json successfully written!" << std::endl;
 }

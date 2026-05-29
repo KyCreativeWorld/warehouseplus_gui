@@ -54,6 +54,8 @@ class SimulatorButton : public Button {
         }
 
         void Update(int sTimerMin, int sTimerMax, int sIBmin, int sIBmax, int sOBmin, int sOBmax);
+
+        void UpdateJSON();
     protected:
         void onClick() override;
     private:
@@ -65,4 +67,15 @@ class SimulatorButton : public Button {
 
         int timerMin;
         int timerMax;
+};
+
+class SimUpdateButton : public Button {
+    public:
+        SimUpdateButton(std::string offText, std::string onText, Rectangle buttonShape, SimulatorButton& sim)
+                       : Button(offText, onText, buttonShape),
+                         simButton(sim) {}
+    protected:
+        SimulatorButton& simButton;
+        void onClick() override { simButton.UpdateJSON(); }
+    
 };
