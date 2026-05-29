@@ -8,7 +8,7 @@ rm -f $APP_NAME
 # Print a message indicating the build process has started
 echo "Building $APP_NAME..."
 
-g++ main.cpp -o main
+g++ main.cpp -o $APP_NAME
 
 clang++ -std=c++17 *.cpp \
     -I./include \
@@ -20,4 +20,5 @@ clang++ -std=c++17 *.cpp \
 
 if [ $? -eq 0 ]; then
     ./$APP_NAME
+    ./../warehouseplus/build.bash
 fi
