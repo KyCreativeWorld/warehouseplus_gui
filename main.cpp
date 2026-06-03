@@ -161,6 +161,26 @@ int main(void)
     } catch (const std::filesystem::filesystem_error& e) {
         std::cerr << "Cleanup Error: Could not delete file. " << e.what() << '\n';
     }
+
+    try {
+        if (std::filesystem::remove("../warehouseplus/backend/new_data_available.txt")) {
+            std::cout << "Cleanup successful: new_data_available.txt file deleted.\n";
+        } else {
+            std::cout << "Cleanup note: new_data_available.txt already deleted.\n";
+        }
+    } catch (const std::filesystem::filesystem_error& e) {
+        std::cerr << "Cleanup Error: Could not delete file. " << e.what() << '\n';
+    }
+
+    try {
+        if (std::filesystem::remove("../warehouseplus/backend/delete_items.txt")) {
+            std::cout << "Cleanup successful: delete_items.txt file deleted.\n";
+        } else {
+            std::cout << "Cleanup note: delete_items.txt already deleted.\n";
+        }
+    } catch (const std::filesystem::filesystem_error& e) {
+        std::cerr << "Cleanup Error: Could not delete file. " << e.what() << '\n';
+    }
     
     CloseWindow();
 
