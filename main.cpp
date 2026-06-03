@@ -6,7 +6,7 @@
 
 #include <iostream>
 #include <fstream>
-#include <stdio.h>
+#include <filesystem>
 
 #define MAX_MONITORS 10
 
@@ -27,6 +27,17 @@ typedef struct MonitorInfo {
 
 int main(void)
 {
+    try {
+        // std::filesystem::remove returns true if the file was deleted, false if it didn't exist
+        if (std::filesystem::remove("../warehouseplus/backend/simulator_info.json")) {
+            std::cout << "Cleanup successful: simulator_info.json file deleted.\n";
+        } else {
+            std::cout << "Cleanup note: File did not exist.\n";
+        }
+    } catch (const std::filesystem::filesystem_error& e) {
+        std::cerr << "Cleanup Error: Could not delete file. " << e.what() << '\n';
+    }
+
     // Initialization
     //--------------------------------------------------------------------------------------
     const int screenWidth = 1710;
@@ -46,14 +57,17 @@ int main(void)
     Slider simOBminSlider = {"Outbound Shipment Minimum: %i", { 1360, 450, 210, 20 }, 0.5f, 0, 300};
     Slider simOBmaxSlider = {"Outbound Shipment Maximum: %i", { 1360, 550, 210, 20 }, 0.5f, 0, 300};
 
-    Slider simTimerminSlider = {"Minimum Time Inteval: %i", { 1360, 200, 210, 20 }, 0.5f, 0, 300};
-    Slider simTimermaxSlider = {"Maximum Time Inteval: %i", { 1360, 300, 210, 20 }, 0.5f, 0, 300};
+    Slider simTimerminSlider = {"Minimum Time Inteval: %i", { 1360, 200, 210, 20 }, 0.5f, 5, 30};
+    Slider simTimermaxSlider = {"Maximum Time Inteval: %i", { 1360, 300, 210, 20 }, 0.5f, 5, 30};
 
     SimulatorButton simButton("Off", "On", {1000, 160, 210, 80});
     SimUpdateButton simUpdater("Update", "Update", {1000, 260, 210, 80}, simButton);
+
+    DeleteButton delButton("Delete 10 Items", {800, 260, 210, 80});
     
-    // std::cout << "Created file" << std::endl;
-    // std::fstream statsFile("../warehouseplus/info.json");
+    
+
+    unsigned int warehouseSize = 0;
     
     // Update
     //--------------------------------------------------------------------------------------
@@ -82,6 +96,8 @@ int main(void)
 
         simUpdater.Update();
 
+        delButton.Update();
+
         
         // Drawing
         BeginDrawing();
@@ -91,6 +107,25 @@ int main(void)
         DrawRectangle(20, 20, 1670, 927, PRIMARY_BG);
 
         DrawText("WarehousePLUS", 40, 40, 32, TEXT_COLOR);
+
+
+
+        if (std::filesystem::remove("new_data_available.txt")) {
+            std::ifstream warehouseInfoFile("warehouse_info.json");
+
+            json warehouseInfo;
+            try {
+                warehouseInfoFile >> warehouseInfo;
+            } catch (const json::parse_error& e) {
+                std::cout << "JSON Parsing Error on update: " << e.what() << std::endl;
+            }
+
+            warehouseSize = warehouseInfo["warehouse_size"];
+
+            warehouseInfoFile.close();
+        }
+
+        DrawText(TextFormat("Warehouse Size: %u", warehouseSize), 40, 140, 22, TEXT_COLOR);
 
 
         // Draw sliders
@@ -108,30 +143,24 @@ int main(void)
         simButton.Draw();
         simUpdater.Draw();
 
+        delButton.Draw();
+
         EndDrawing(); // End the drawing
-
-        // Update info.json
-        // std::cout << "Removed file" << std::endl;
-        // int delStatus = remove("../warehouseplus/info.json");
-
-        // if (delStatus == 0) {
-            // std::cout << "Wrote to file" << std::endl;
-            // std::fstream statsFile("../warehouseplus/info.json");
-
-            // statsFile << "{\"sim_timer_min\": " << simTimerminSlider.GetValue()
-            //           << ", \"sim_timer_max\": " << simTimermaxSlider.GetValue()
-            //           << ", \"sim_inbound_min\": " << simIBminSlider.GetValue()
-            //           << ", \"sim_inbound_max\": " << simIBmaxSlider.GetValue()
-            //           << ", \"sim_outbound_min\": " << simOBminSlider.GetValue()
-            //           << ", \"sim_outbound_max\": " << simOBmaxSlider.GetValue() << "}";
-
-            // statsFile.close();
-        // }
     }
 
     // Closing
     //--------------------------------------------------------------------------------------
-    if (IsPathFile("../warehouseplus/simulator_info.json")) remove("../warehouseplus/simulator_info.json");
+
+    try {
+        // std::filesystem::remove returns true if the file was deleted, false if it didn't exist
+        if (std::filesystem::remove("../warehouseplus/backend/simulator_info.json")) {
+            std::cout << "Cleanup successful: simulator_info.json file deleted.\n";
+        } else {
+            std::cout << "Cleanup note: File did not exist.\n";
+        }
+    } catch (const std::filesystem::filesystem_error& e) {
+        std::cerr << "Cleanup Error: Could not delete file. " << e.what() << '\n';
+    }
     
     CloseWindow();
 

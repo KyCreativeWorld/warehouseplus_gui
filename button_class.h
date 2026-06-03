@@ -79,3 +79,10 @@ class SimUpdateButton : public Button {
         void onClick() override { simButton.UpdateJSON(); }
     
 };
+
+class DeleteButton : public Button {
+    public:
+        DeleteButton(std::string buttonText, Rectangle buttonShape) : Button(buttonText, buttonText, buttonShape) {}
+    protected:
+        void onClick() override;
+};

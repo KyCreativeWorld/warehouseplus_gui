@@ -54,25 +54,11 @@ void SimulatorButton::onClick() {
     this->setActive(!this->isActive());
 
     UpdateJSON();
-}
-
-// void SimulatorButton::UpdateJSON() {
-//     std::ofstream simInfoFile("../warehouseplus/backend/simulator_info.json");
-
-//     simInfoFile << "{\"sim_active\": " << this->isActive()
-//                 << ", \"sim_timer_min\": " << timerMin
-//                 << ", \"sim_timer_max\": " << timerMax
-//                 << ", \"sim_inbound_min\": " << IBmin
-//                 << ", \"sim_inbound_max\": " << IBmax
-//                 << ", \"sim_outbound_min\": " << OBmin
-//                 << ", \"sim_outbound_max\": " << OBmax << "}";
-
-//     simInfoFile.close();
-// }
+};
 
 void SimulatorButton::UpdateJSON() {
-    std::cout << "[DEBUG] UpdateJSON() called inside SimulatorButton!" << std::endl;
-    std::cout << "[DEBUG] Current IBmin state: " << IBmin << std::endl;
+    // std::cout << "[DEBUG] UpdateJSON() called inside SimulatorButton!" << std::endl;
+    // std::cout << "[DEBUG] Current IBmin state: " << IBmin << std::endl;
 
     std::ofstream simInfoFile("../warehouseplus/backend/simulator_info.json");
 
@@ -89,6 +75,18 @@ void SimulatorButton::UpdateJSON() {
                 << ", \"sim_outbound_min\": " << OBmin
                 << ", \"sim_outbound_max\": " << OBmax << "}";
 
+    
+    std::ofstream newDataAvailableNotificationFile("../warehouseplus/backend/new_data_available.txt");
+
+    newDataAvailableNotificationFile.close();
     simInfoFile.close();
-    std::cout << "[SUCCESS] simulator_info.json successfully written!" << std::endl;
+    // std::cout << "[SUCCESS] simulator_info.json successfully written!" << std::endl;
+}
+
+
+
+void DeleteButton::onClick() {
+    std::ofstream deleteItemsNotificationFile("../warehouseplus/backend/delete_items.txt");
+
+    deleteItemsNotificationFile.close();
 }

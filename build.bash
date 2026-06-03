@@ -19,6 +19,6 @@ clang++ -std=c++17 *.cpp \
     -o $APP_NAME
 
 if [ $? -eq 0 ]; then
-    ./$APP_NAME
+    ./$APP_NAME &
     ./../warehouseplus/build.bash
 fi
