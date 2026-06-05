@@ -43,7 +43,7 @@ int main(void)
     const int screenWidth = 1710;
     const int screenHeight = 1107;
 
-    InitWindow(screenWidth, screenHeight, "📦 WarehousePLUS 📦");
+    InitWindow(screenWidth, screenHeight, "WarehousePlus");
 
     MonitorInfo monitors[MAX_MONITORS] = { 0 };
     int currentMonitorIndex = GetCurrentMonitor();
@@ -67,13 +67,18 @@ int main(void)
     SimulatorButton simButton("Off", "On", {1000, 160, 210, 80});
     SimUpdateButton simUpdater("Update", "Update", {1000, 260, 210, 80}, simButton);
 
-    Button delButton("Delete 10 Items", "Delete 10 Items", {640, 160, 210, 80}, "delete_items.txt");
-    Button saleButton("SALE", "SALE", {640, 260, 210, 80}, "put_items_on_sale.txt");
+    Button delButton("Delete 10 Items", "Delete 10 Items", {40, 160, 210, 80}, "delete_items.txt");
+    Button saleButton("SALE", "SALE", {40, 260, 210, 80}, "put_items_on_sale.txt");
     
     
 
     unsigned int warehouseSize = 0;
+    unsigned int firstItemId = 0;
+    std::string firstItemName = "Unknown", firstItemType = "Unknown";
     unsigned int firstItemPrice = 0;
+
+    unsigned int totalInbShipments;
+    unsigned int totalOutbShipments;
     
     // Update
     //--------------------------------------------------------------------------------------
@@ -113,7 +118,7 @@ int main(void)
 
         DrawRectangle(20, 20, 1670, 927, PRIMARY_BG);
 
-        DrawText("WarehousePLUS", 40, 40, 32, TEXT_COLOR);
+        DrawText("WarehousePlus", 40, 40, 32, TEXT_COLOR);
 
 
 
@@ -123,8 +128,14 @@ int main(void)
             json warehouseInfo;
             try {
                 warehouseInfoFile >> warehouseInfo;
-                warehouseSize = warehouseInfo["warehouse_size"];
+                warehouseSize = warehouseInfo["warehouse_size"].get<int>();
+                firstItemId = warehouseInfo["first_item_id"].get<int>();
+                firstItemName = warehouseInfo["first_item_name"].get<std::string>();
+                firstItemType = warehouseInfo["first_item_type"].get<std::string>();
                 firstItemPrice = warehouseInfo["first_item_price"];
+
+                totalInbShipments = warehouseInfo["inb_shipments"];
+                totalOutbShipments = warehouseInfo["outb_shipments"];
             } catch (const json::parse_error& e) {
                 std::cout << "JSON Parsing Error on update: " << e.what() << std::endl;
             }
@@ -132,13 +143,20 @@ int main(void)
             warehouseInfoFile.close();
         }
 
-        DrawText(TextFormat("Warehouse Size: %u", warehouseSize), 40, 740, 52, TEXT_COLOR);
-        DrawText(TextFormat("First Item's Price: %u", firstItemPrice), 40, 840, 52, TEXT_COLOR);
+        DrawText(TextFormat("Warehouse Size: %u", warehouseSize), 40, 450, 52, TEXT_COLOR);
+        DrawText(TextFormat("First Item: %s", firstItemName.c_str()), 40, 550, 32, TEXT_COLOR);
+        DrawText(TextFormat("ID            %u", firstItemId), 40, 600, 32, TEXT_COLOR);
+        DrawText(TextFormat("Type        %s", firstItemType.c_str()), 40, 650, 32, TEXT_COLOR);
+        DrawText(TextFormat("Price        %u", firstItemPrice), 40, 700, 32, TEXT_COLOR);
         
+        DrawText("Total Shipments:", 1000, 660, 20, TEXT_COLOR);
+        DrawText(TextFormat("Inbound: %u", totalInbShipments), 1000, 700, 20, TEXT_COLOR);
+        DrawText(TextFormat("Outbound: %u", totalOutbShipments), 1360, 700, 20, TEXT_COLOR);
+
 
 
         // Draw sliders
-        DrawText("Inbound Shipment Count", 1000, 100, 20, TEXT_COLOR);
+        DrawText("Inbound and Outbound Shipment Simulator", 1000, 100, 20, TEXT_COLOR);
         simIBminSlider.Draw();
         simIBmaxSlider.Draw();
 
