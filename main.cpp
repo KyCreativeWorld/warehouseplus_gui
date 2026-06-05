@@ -61,8 +61,8 @@ int main(void)
     Slider simOBminSlider = {"Outbound Shipment Minimum: %i", { 1360, 450, 210, 20 }, 0.5f, 0, 300};
     Slider simOBmaxSlider = {"Outbound Shipment Maximum: %i", { 1360, 550, 210, 20 }, 0.5f, 0, 300};
 
-    Slider simTimerminSlider = {"Minimum Time Inteval: %i", { 1360, 200, 210, 20 }, 0.5f, 5, 30};
-    Slider simTimermaxSlider = {"Maximum Time Inteval: %i", { 1360, 300, 210, 20 }, 0.5f, 5, 30};
+    Slider simTimerminSlider = {"Minimum Time Inteval: %i", { 1360, 200, 210, 20 }, 0.5f, 1, 30};
+    Slider simTimermaxSlider = {"Maximum Time Inteval: %i", { 1360, 300, 210, 20 }, 0.5f, 1, 30};
 
     SimulatorButton simButton("Off", "On", {1000, 160, 210, 80});
     SimUpdateButton simUpdater("Update", "Update", {1000, 260, 210, 80}, simButton);
@@ -132,8 +132,8 @@ int main(void)
             warehouseInfoFile.close();
         }
 
-        DrawText(TextFormat("Warehouse Size: %u", warehouseSize), 40, 140, 22, TEXT_COLOR);
-        DrawText(TextFormat("First Item's Price: %u", firstItemPrice), 40, 240, 22, TEXT_COLOR);
+        DrawText(TextFormat("Warehouse Size: %u", warehouseSize), 40, 740, 52, TEXT_COLOR);
+        DrawText(TextFormat("First Item's Price: %u", firstItemPrice), 40, 840, 52, TEXT_COLOR);
         
 
 
