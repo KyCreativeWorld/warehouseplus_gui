@@ -73,6 +73,7 @@ int main(void)
     
 
     unsigned int warehouseSize = 0;
+    unsigned int firstItemPrice = 0;
     
     // Update
     //--------------------------------------------------------------------------------------
@@ -123,6 +124,7 @@ int main(void)
             try {
                 warehouseInfoFile >> warehouseInfo;
                 warehouseSize = warehouseInfo["warehouse_size"];
+                firstItemPrice = warehouseInfo["first_item_price"];
             } catch (const json::parse_error& e) {
                 std::cout << "JSON Parsing Error on update: " << e.what() << std::endl;
             }
@@ -131,6 +133,8 @@ int main(void)
         }
 
         DrawText(TextFormat("Warehouse Size: %u", warehouseSize), 40, 140, 22, TEXT_COLOR);
+        DrawText(TextFormat("First Item's Price: %u", firstItemPrice), 40, 240, 22, TEXT_COLOR);
+        
 
 
         // Draw sliders
