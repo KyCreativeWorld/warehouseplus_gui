@@ -68,7 +68,7 @@ int main(void)
     SimUpdateButton simUpdater("Update", "Update", {1000, 260, 210, 80}, simButton);
 
     Button delButton("Delete 10 Items", "Delete 10 Items", {640, 160, 210, 80}, "delete_items.txt");
-    Button saleButton("HALF OFF", "HALF OFF", {640, 260, 210, 80}, "put_items_on_sale.txt");
+    Button saleButton("SALE", "SALE", {640, 260, 210, 80}, "put_items_on_sale.txt");
     
     
 
