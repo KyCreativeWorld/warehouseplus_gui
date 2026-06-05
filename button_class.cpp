@@ -28,7 +28,9 @@ void Button::Draw() {
 }
 
 void Button::onClick() {
-    this->setActive(!this->isActive());
+    std::ofstream fileCall("../warehouseplus/backend/" + this->file);
+
+    fileCall.close();
 }
 
 
@@ -81,12 +83,4 @@ void SimulatorButton::UpdateJSON() {
     newDataAvailableNotificationFile.close();
     simInfoFile.close();
     // std::cout << "[SUCCESS] simulator_info.json successfully written!" << std::endl;
-}
-
-
-
-void DeleteButton::onClick() {
-    std::ofstream deleteItemsNotificationFile("../warehouseplus/backend/delete_items.txt");
-
-    deleteItemsNotificationFile.close();
 }

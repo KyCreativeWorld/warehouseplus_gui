@@ -12,16 +12,18 @@ class Button {
         std::string offText;
         std::string onText;
         Rectangle bounds;
+        std::string file;
         bool active;
 
         short clickFade = 0;    
         virtual void onClick();
 
     public:
-        Button(std::string offText, std::string onText, Rectangle buttonShape) {
+        Button(std::string offText, std::string onText, Rectangle buttonShape, std::string file) {
             this->offText = offText;
             this->onText = onText;
             this->bounds = buttonShape;
+            this->file = file;
         }
 
         void Update();
@@ -33,7 +35,7 @@ class Button {
 
 class SimulatorButton : public Button {  
     public:
-        SimulatorButton(std::string offText, std::string onText, Rectangle buttonShape) : Button(offText, onText, buttonShape) {
+        SimulatorButton(std::string offText, std::string onText, Rectangle buttonShape) : Button(offText, onText, buttonShape, "") {
             this->IBmin = 0;
             this->IBmax = 0;
             this->OBmin = 0;
@@ -72,17 +74,10 @@ class SimulatorButton : public Button {
 class SimUpdateButton : public Button {
     public:
         SimUpdateButton(std::string offText, std::string onText, Rectangle buttonShape, SimulatorButton& sim)
-                       : Button(offText, onText, buttonShape),
+                       : Button(offText, onText, buttonShape, ""),
                          simButton(sim) {}
     protected:
         SimulatorButton& simButton;
         void onClick() override { simButton.UpdateJSON(); }
     
-};
-
-class DeleteButton : public Button {
-    public:
-        DeleteButton(std::string buttonText, Rectangle buttonShape) : Button(buttonText, buttonText, buttonShape) {}
-    protected:
-        void onClick() override;
 };
